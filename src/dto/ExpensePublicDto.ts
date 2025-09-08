@@ -10,7 +10,7 @@ export class ExpensePublicDto {
     @ApiProperty({ example: 120.87 })
     amount: number;
 
-    @ApiProperty({ enum: ['FIXED', 'VARIABLE'] })
+    @ApiProperty({ enum: TypeOfSpending, enumName: 'TypeOfSpending' })
     type: TypeOfSpending;
 
     @ApiProperty({ example: '2025-08-01', description: 'Primeiro dia do mês de referência' })
