@@ -2,13 +2,12 @@ import { Post, Controller, HttpCode, HttpStatus, Body, Get, Param, ParseUUIDPipe
 import { ApiCreatedResponse, ApiNoContentResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiParam, ApiTags } from "@nestjs/swagger";
 import { ExpensePublicDto } from "src/dto/ExpensePublicDto";
 import { CreateExpenseDto, UpdateExpensesDto } from "src/dto/ExpensesDto";
-import { Expenses } from "src/expenses/expenses.entity";
 import { ExpensesService } from "src/services/expensesService";
 
 
 @ApiTags('expenses')
 @Controller('expenses')
-export class expensesController {
+export class ExpensesController {
     constructor(
         private readonly expensesService: ExpensesService
     ) { }
