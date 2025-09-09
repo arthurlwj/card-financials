@@ -1,6 +1,8 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
 import { ExpensePublicDto } from "src/dto/ExpensePublicDto";
 import { TypeOfSpending } from "src/enums/type-of-spending.enum";
+import { Expenses } from "src/expenses/expenses.entity";
 import { ExpenseRepository } from "src/repositories/expense.repository";
 
 

@@ -3,13 +3,12 @@ import { ApiCreatedResponse, ApiNoContentResponse, ApiNotFoundResponse, ApiOkRes
 import { CreateExpenseDto } from "src/dto/CreateExpenseDto";
 import { ExpensePublicDto } from "src/dto/ExpensePublicDto";
 import { UpdateExpensesDto } from "src/dto/UpdateExpensesDto";
-import { Expenses } from "src/expenses/expenses.entity";
 import { ExpensesService } from "src/services/expensesService";
 
 
 @ApiTags('expenses')
 @Controller('expenses')
-export class expensesController {
+export class ExpensesController {
     constructor(
         private readonly expensesService: ExpensesService
     ) { }
