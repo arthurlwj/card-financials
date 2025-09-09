@@ -1,9 +1,11 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { ExpensePublicDto } from "src/dto/ExpensePublicDto";
+import { UpdateExpensesDto } from "src/dto/ExpensesDto";
 import { TypeOfSpending } from "src/enums/type-of-spending.enum";
 import { Expenses } from "src/expenses/expenses.entity";
 import { ExpenseRepository } from "src/repositories/expense.repository";
+import toPublic from "src/utils/retornoPropriedades";
 
 
 @Injectable()
@@ -26,20 +28,18 @@ export class ExpensesService {
 
         })
 
-        return createdExpense;
+        return {
+            description: createdExpense.description,
+            amount: createdExpense.amount,
+            type: createdExpense.type,
+            referenceMonth: createdExpense.referenceMonth,
+        }
 
 
     }
 
-    async listAllExpenses(): Promise<ExpensePublicDto[]> {
-        const listAllExpenses = await this.serviceRepo.expensesList();
-        return listAllExpenses.map(filterSomeItems => ({
-                description: filterSomeItems.description,
-                amount: filterSomeItems.amount,
-                type: filterSomeItems.type,
-                referenceMonth: filterSomeItems.referenceMonth
-
-        }))
+    async listAllExpenses() {
+       return await this.serviceRepo.expensesList();
     }
 
     async expenseListById(id: string) {
@@ -52,21 +52,16 @@ export class ExpensesService {
         return findById;
     }
 
-    async expensesUpdate(id: string, data: {
-        description: string;
-        amount: number;
-        type: TypeOfSpending;
-        referenceMonth?: string;
-    }) {
-        const updateResult = await this.serviceRepo.expensesUpdateById(id, data);
+    async expensesUpdate(id: string, dto: UpdateExpensesDto) {
+        const updateResult = await this.serviceRepo.expensesUpdateById(id, dto);
 
-        if (updateResult.affected === 0) {
+        if (!updateResult.affected) {
             throw new NotFoundException('Gasto não encontrado')
         }
 
         const updateExpenses = await this.serviceRepo.expenseListById(id);
 
-        return updateExpenses
+        return toPublic(updateExpenses)
     }
 
     async expensesDelete(id: string){

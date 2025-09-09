@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { CreateExpenseDto } from "src/dto/CreateExpenseDto";
 import { ExpensePublicDto } from "src/dto/ExpensePublicDto";
+import { CreateExpenseDto, UpdateExpensesDto } from "src/dto/ExpensesDto";
 import { Expenses } from "src/expenses/expenses.entity";
 import { Repository } from "typeorm";
 
@@ -13,25 +13,23 @@ export class ExpenseRepository {
         private readonly repo: Repository<Expenses>
     ) { }
 
-    async createOne(data: Partial<Expenses>) {
+    async createOne(data: Partial<CreateExpenseDto>) {
         const expense = this.repo.create(data);
 
         return await this.repo.save(expense);
     }
 
-    async expensesList(): Promise<ExpensePublicDto[]> {
-        const listExpenses = this.repo.find();
-        return listExpenses
+    async expensesList(): Promise<Expenses[]> {
+        return this.repo.find();
     }
 
     async expenseListById(id: string): Promise<Expenses | null> {
-        const findById = this.repo.findOne({ where: { id } })
-        return await findById
+        return this.repo.findOne({ where: { id } })
     }
 
-    async expensesUpdateById(id: string, data: Partial<Expenses>) {
-        const updateExpenses = this.repo.update({id}, data)
-        return await updateExpenses
+    async expensesUpdateById(id: string, data: UpdateExpensesDto) {
+        return this.repo.update({id}, data)
+
     }
 
     async expensesDelete(id: string){

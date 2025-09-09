@@ -1,8 +1,7 @@
 import { Post, Controller, HttpCode, HttpStatus, Body, Get, Param, ParseUUIDPipe, Patch, Delete } from "@nestjs/common";
 import { ApiCreatedResponse, ApiNoContentResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiParam, ApiTags } from "@nestjs/swagger";
-import { CreateExpenseDto } from "src/dto/CreateExpenseDto";
 import { ExpensePublicDto } from "src/dto/ExpensePublicDto";
-import { UpdateExpensesDto } from "src/dto/UpdateExpensesDto";
+import { CreateExpenseDto, UpdateExpensesDto } from "src/dto/ExpensesDto";
 import { ExpensesService } from "src/services/expensesService";
 
 
@@ -15,7 +14,7 @@ export class ExpensesController {
 
     @Post()
     @ApiOperation({ summary: 'Criar gasto' })
-    @ApiCreatedResponse({type: CreateExpenseDto})
+    @ApiCreatedResponse({type: ExpensePublicDto})
     @HttpCode(HttpStatus.CREATED)
     async createExpenses(@Body() dto: CreateExpenseDto) {
 
@@ -52,17 +51,12 @@ export class ExpensesController {
 
     @Patch(':id')
     @ApiOperation({ summary: 'Atualizar gasto por ID' })
-    @ApiParam({ name: 'id', type: String, description: 'UUID do gasto' })
-    @ApiOkResponse({ description: 'Gasto atualizado com sucesso' })
+    @ApiParam({ name: 'id', schema: { type: 'string', format: 'uuid' }, description: 'UUID do gasto' })
+    @ApiOkResponse({ type: ExpensePublicDto})
     @ApiNotFoundResponse({ description: 'Gasto não encontrado' })
 
     async expensesUpdate(@Body() dto: UpdateExpensesDto, @Param('id', ParseUUIDPipe) id: string) {
-        return await this.expensesService.expensesUpdate(id, {
-            description: dto.description,
-            amount: dto.amount,
-            type: dto.type,
-            referenceMonth: dto.referenceMonth
-        })
+        return this.expensesService.expensesUpdate(id, dto)
 
     }
 
