@@ -1,5 +1,5 @@
-import { Post, Controller, HttpCode, HttpStatus, Body, Get, Param, ParseUUIDPipe, Patch, Delete } from "@nestjs/common";
-import { ApiCreatedResponse, ApiNoContentResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiParam, ApiTags } from "@nestjs/swagger";
+import { Post, Controller, HttpCode, HttpStatus, Body, Get, Param, ParseUUIDPipe, Patch, Delete, UseFilters, Req } from "@nestjs/common";
+import { ApiBadRequestResponse, ApiConflictResponse, ApiCreatedResponse, ApiNoContentResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiParam, ApiTags } from "@nestjs/swagger";
 import { ExpensePublicDto } from "src/dto/ExpensePublicDto";
 import { CreateExpenseDto, UpdateExpensesDto } from "src/dto/ExpensesDto";
 import { ExpensesService } from "src/services/expensesService";
@@ -15,15 +15,18 @@ export class ExpensesController {
     @Post()
     @ApiOperation({ summary: 'Criar gasto' })
     @ApiCreatedResponse({type: ExpensePublicDto})
+    @ApiBadRequestResponse({ description: 'Validation error' })
+    @ApiConflictResponse({ description: 'Unique violation' })
     @HttpCode(HttpStatus.CREATED)
     async createExpenses(@Body() dto: CreateExpenseDto) {
 
         const created = await this.expensesService.create({
+
             description: dto.description,
             amount: dto.amount,
             type: dto.type,
             referenceMonth: dto.referenceMonth,
-        })
+        });
 
         return created;
 
@@ -43,6 +46,7 @@ export class ExpensesController {
     @Get(':id')
     @ApiOperation({ summary: 'Buscar por ID' })
     @ApiParam({ name: 'id', type: String, description: 'UUID do gasto' })
+    @ApiOkResponse({ type: ExpensePublicDto })
     @ApiNotFoundResponse({ description: 'Gasto não encontrado' })
 
     async listExpenseById(@Param('id', ParseUUIDPipe) id: string) {
@@ -61,6 +65,7 @@ export class ExpensesController {
     }
 
     @Delete(':id')
+    @HttpCode(HttpStatus.NO_CONTENT)
     @ApiOperation({ summary: 'Deletar gasto por ID' })
     @ApiParam({ name: 'id', type: String, description: 'UUID do gasto' })
     @ApiNoContentResponse({ description: 'Gasto deletado com sucesso' })

@@ -8,8 +8,10 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ValidationPipe({
     whitelist: true,
-    forbidNonWhitelisted: false,
+    forbidNonWhitelisted: true,
     transform: true,
+    stopAtFirstError: true,
+    validationError: {target: false, value: false},
     transformOptions: { enableImplicitConversion: true },
   }))
   const config = new DocumentBuilder()
