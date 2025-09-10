@@ -1,9 +1,7 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
 import { ExpensePublicDto } from "src/dto/ExpensePublicDto";
-import { UpdateExpensesDto } from "src/dto/ExpensesDto";
+import { CreateExpenseDto, UpdateExpensesDto } from "src/dto/ExpensesDto";
 import { TypeOfSpending } from "src/enums/type-of-spending.enum";
-import { Expenses } from "src/expenses/expenses.entity";
 import { ExpenseRepository } from "src/repositories/expense.repository";
 import toPublic from "src/utils/retornoPropriedades";
 
@@ -14,12 +12,7 @@ export class ExpensesService {
         private readonly serviceRepo: ExpenseRepository
     ) { }
 
-    async create(data: {
-        description: string;
-        amount: number;
-        type: TypeOfSpending;
-        referenceMonth?: string;
-    }) {
+    async create(data: CreateExpenseDto) {
 
         const createdExpense = await this.serviceRepo.createOne({
             description: data.description,
@@ -27,6 +20,7 @@ export class ExpensesService {
             type: data.type,
 
         })
+
 
         return {
             description: createdExpense.description,
@@ -39,7 +33,7 @@ export class ExpensesService {
     }
 
     async listAllExpenses() {
-       return await this.serviceRepo.expensesList();
+        return await this.serviceRepo.expensesList();
     }
 
     async expenseListById(id: string) {
@@ -64,10 +58,10 @@ export class ExpensesService {
         return toPublic(updateExpenses)
     }
 
-    async expensesDelete(id: string){
+    async expensesDelete(id: string) {
         const deleteResult = await this.serviceRepo.expensesDelete(id)
 
-        if(deleteResult.affected === 0){
+        if (deleteResult.affected === 0) {
             throw new NotFoundException('Gasto não encontrado')
         }
 
