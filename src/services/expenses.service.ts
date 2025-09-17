@@ -3,7 +3,7 @@ import { ExpensePublicDto } from "src/dto/ExpensePublicDto";
 import { CreateExpenseDto, UpdateExpensesDto } from "src/dto/ExpensesDto";
 import { TypeOfSpending } from "src/enums/type-of-spending.enum";
 import { ExpenseRepository } from "src/repositories/expense.repository";
-import toPublic from "src/utils/retornoPropriedades";
+import { toPublic } from "src/utils/retornoPropriedades";
 
 
 @Injectable()

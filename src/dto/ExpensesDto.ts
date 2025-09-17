@@ -6,6 +6,9 @@ import { PartialType } from "@nestjs/mapped-types";
 
 
 export class CreateExpenseDto {
+    @IsOptional()
+    cardId: string;
+
     @IsDefined({message: 'description is required'})
     @IsString({message: 'description must be a string'})
     @IsNotEmpty({message: 'description must not be empty'})
