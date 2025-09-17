@@ -3,6 +3,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { ExpensePublicDto } from "src/dto/ExpensePublicDto";
 import { CreateExpenseDto, UpdateExpensesDto } from "src/dto/ExpensesDto";
 import { Expenses } from "src/expenses/expenses.entity";
+import { mapPostgresError } from "src/utils/postgres-error.utils";
 import { Repository } from "typeorm";
 
 
@@ -16,7 +17,11 @@ export class ExpenseRepository {
     async createOne(data: Partial<CreateExpenseDto>) {
         const expense = this.repo.create(data);
 
-        return await this.repo.save(expense);
+        try {
+            return await this.repo.save(expense);
+        } catch (e) {
+            mapPostgresError(e);
+        }
     }
 
     async expensesList(): Promise<Expenses[]> {
@@ -28,11 +33,11 @@ export class ExpenseRepository {
     }
 
     async expensesUpdateById(id: string, data: UpdateExpensesDto) {
-        return this.repo.update({id}, data)
+        return this.repo.update({ id }, data)
 
     }
 
-    async expensesDelete(id: string){
+    async expensesDelete(id: string) {
         return this.repo.delete(id)
     }
 }

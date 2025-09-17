@@ -2,7 +2,7 @@ import { Post, Controller, HttpCode, HttpStatus, Body, Get, Param, ParseUUIDPipe
 import { ApiBadRequestResponse, ApiConflictResponse, ApiCreatedResponse, ApiNoContentResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiParam, ApiTags } from "@nestjs/swagger";
 import { ExpensePublicDto } from "src/dto/ExpensePublicDto";
 import { CreateExpenseDto, UpdateExpensesDto } from "src/dto/ExpensesDto";
-import { ExpensesService } from "src/services/expensesService";
+import { ExpensesService } from "src/services/expenses.service";
 
 
 @ApiTags('expenses')
@@ -26,6 +26,7 @@ export class ExpensesController {
             amount: dto.amount,
             type: dto.type,
             referenceMonth: dto.referenceMonth,
+            cardId: dto.cardId
         });
 
         return created;

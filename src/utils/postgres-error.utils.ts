@@ -2,7 +2,7 @@ import { BadRequestException, ConflictException } from "@nestjs/common";
 import { QueryFailedError } from "typeorm";
 import { getPgCode, getPgConstraint } from "./postgres-error";
 
-export function mapPostgresError(e: unknown) {
+export function mapPostgresError(e: unknown) {  //Transformar em classe
     if (!(e instanceof QueryFailedError)) return null;
 
     const code = getPgCode(e)

@@ -1,10 +1,10 @@
 
-import { ExpensesController } from "./ExpensesController"
+import { ExpensesController } from "./expenses.controller"
 import { Expenses } from "src/expenses/expenses.entity";
 import { Test, TestingModule } from '@nestjs/testing';
 import { DeepPartial } from "typeorm";
 import { TypeOfSpending } from "src/enums/type-of-spending.enum";
-import { ExpensesService } from "src/services/expensesService";
+import { ExpensesService } from "src/services/expenses.service";
 
 
 describe('ExpensesController', () => {
