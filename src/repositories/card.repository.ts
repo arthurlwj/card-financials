@@ -32,20 +32,12 @@ export class ExpenseCreditCardRepository {
     async fieldFilter(data: FilterCardDTO) {
         const query = this.repo.createQueryBuilder('card');
 
-        if(data.cardName) query.andWhere('card.cardName = :cardName', {cardName: data.cardName});
-        if(data.cardLimit) query.andWhere('card.cardLimit = :cardLimit', {cardLimit: data.cardLimit});
-        if(data.dueDay) query.andWhere('card.dueDay = :dueDay', {dueDay: data.dueDay});
+        if (data.cardName) query.andWhere('card.cardName = :cardName', { cardName: data.cardName });
+        if (data.cardLimit) query.andWhere('card.cardLimit = :cardLimit', { cardLimit: data.cardLimit });
+        if (data.dueDay) query.andWhere('card.dueDay = :dueDay', { dueDay: data.dueDay });
 
         return query.getMany();
     }
-
-
-
-
-
-
-
-
 
     async cardUpdate(id: string, data: UpdateCardDto) {
         return this.repo.update({ id }, data)
