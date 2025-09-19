@@ -3,9 +3,8 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { CreateCardDto, UpdateCardDto } from "src/dto/cardDto";
 import { FilterCardDTO } from "src/dto/filter-cardDto";
 import { ExpensesCreditCard } from "src/expenses/card.entity";
+import { mapPostgresError } from "src/utils/postgres-error.utils";
 import { Repository } from "typeorm";
-
-
 
 @Injectable()
 export class ExpenseCreditCardRepository {
@@ -18,7 +17,13 @@ export class ExpenseCreditCardRepository {
 
     async createOne(data: CreateCardDto) {
         const cardDate = this.repo.create(data);
-        return await this.repo.save(cardDate)
+
+        try {
+            return await this.repo.save(cardDate);
+        } catch (e) {
+            throw mapPostgresError(e) ?? e;
+        }
+
     }
 
     async cardList(): Promise<CreateCardDto[]> {
@@ -40,10 +45,19 @@ export class ExpenseCreditCardRepository {
     }
 
     async cardUpdate(id: string, data: UpdateCardDto) {
-        return this.repo.update({ id }, data)
+
+        try {
+            return this.repo.update({ id }, data);
+        } catch (e) {
+           throw mapPostgresError(e) ?? e;
+        }
     }
 
     async cardDelete(id: string) {
-        return this.repo.delete({ id });
+        try {
+            return this.repo.delete({ id });
+        } catch (e) {
+            throw mapPostgresError(e) ?? e;
+        }
     }
 }

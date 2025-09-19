@@ -20,7 +20,7 @@ export class ExpenseRepository {
         try {
             return await this.repo.save(expense);
         } catch (e) {
-            mapPostgresError(e);
+            throw mapPostgresError(e) ?? e;
         }
     }
 
@@ -33,11 +33,20 @@ export class ExpenseRepository {
     }
 
     async expensesUpdateById(id: string, data: UpdateExpensesDto) {
-        return this.repo.update({ id }, data)
+
+        try {
+            return this.repo.update({ id }, data);
+        } catch (e) {
+            throw mapPostgresError(e) ?? e;
+        }
 
     }
 
     async expensesDelete(id: string) {
-        return this.repo.delete(id)
+        try {
+            return this.repo.delete(id);
+        } catch (e) {
+            throw mapPostgresError(e) ?? e;
+        }
     }
 }
