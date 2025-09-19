@@ -1,5 +1,7 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { CreateCardDto, UpdateCardDto } from "src/dto/cardDto";
+import { FilterCardDTO } from "src/dto/filter-cardDto";
+import { ExpensesCreditCard } from "src/expenses/card.entity";
 import { ExpenseCreditCardRepository } from "src/repositories/card.repository";
 import { mapPostgresError } from "src/utils/postgres-error.utils";
 import { cardPublic } from "src/utils/retornoPropriedades";
@@ -36,6 +38,16 @@ export class ExpenseCreditCardService {
         }
 
         return findById;
+    }
+
+    async filterCards(data: FilterCardDTO) {
+        const cardFilter = await this.serviceRepo.fieldFilter(data);
+
+        if (cardFilter.length === 0) {
+            throw new NotFoundException('Cartão de crédito não encontrado')
+        }
+
+        return cardFilter;
     }
 
     async cardUpdate(id: string, data: UpdateCardDto) {
