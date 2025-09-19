@@ -1,5 +1,6 @@
-import { Body, Controller, Delete, Get, Param, ParseUUIDPipe, Patch, Post } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, ParseUUIDPipe, Patch, Post, Query } from "@nestjs/common";
 import { CreateCardDto, UpdateCardDto } from "src/dto/cardDto";
+import { FilterCardDTO } from "src/dto/filter-cardDto";
 import { ExpenseCreditCardService } from "src/services/card.service";
 
 
@@ -25,10 +26,16 @@ export class ExpenseCreditCardController {
         return this.ExpenseCreditCardService.cardList()
     }
 
+    @Get('filter')
+    async filterCards(@Query() data: FilterCardDTO) {
+        return this.ExpenseCreditCardService.filterCards(data);
+    }
+
     @Get(':id')
     async cardListById(@Param('id', ParseUUIDPipe) id: string) {
         return this.ExpenseCreditCardService.cardListById(id)
     }
+
 
     @Patch(':id')
     async cardUpdate(@Body() data: UpdateCardDto, @Param('id', ParseUUIDPipe) id: string) {
