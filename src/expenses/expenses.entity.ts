@@ -1,5 +1,6 @@
 import { TypeOfSpending } from "src/enums/type-of-spending.enum";
-import { BaseEntity, Column, CreateDateColumn, Entity, Index, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { BaseEntity, Column, CreateDateColumn, Entity, Index, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { ExpensesCreditCard } from "./card.entity";
 
 
 @Entity('expenses')
@@ -9,8 +10,10 @@ export class Expenses extends BaseEntity {
 
     @PrimaryGeneratedColumn('uuid')
     id: string;
+
     @Column({ nullable: false, type: 'varchar', length: 120 })
     description: string;
+
     @Column({
         type: 'numeric',
         precision: 12,
@@ -20,7 +23,8 @@ export class Expenses extends BaseEntity {
             from: (value: string) => Number(value),
         }
     })
-    amount: number;
+   amount: number;
+
     @Column({ nullable: false, type: 'enum', enum: TypeOfSpending })
     type: TypeOfSpending;
     @Column({
@@ -28,6 +32,16 @@ export class Expenses extends BaseEntity {
         default: () => "date_trunc('month', now())::date"
     })
     referenceMonth: string;
+
+    @Column({type: 'date'})
+    firstInstallmentDate: Date;
+
+    @Column({ type: 'smallint' })
+    quantityParcels: number;
+
+    @ManyToOne(() => ExpensesCreditCard, (card) => card.expenses, {onDelete: 'CASCADE'})
+    card: ExpensesCreditCard;
+
     @CreateDateColumn({ type: 'timestamptz' })
     createdAt: Date;
 
