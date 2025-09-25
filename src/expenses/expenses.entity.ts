@@ -1,6 +1,7 @@
 import { TypeOfSpending } from "src/enums/type-of-spending.enum";
-import { BaseEntity, Column, CreateDateColumn, Entity, Index, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { BaseEntity, Column, CreateDateColumn, Entity, Index, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { ExpensesCreditCard } from "./card.entity";
+import { Installments } from "./installment.entity";
 
 
 @Entity('expenses')
@@ -23,7 +24,7 @@ export class Expenses extends BaseEntity {
             from: (value: string) => Number(value),
         }
     })
-   amount: number;
+    amount: number;
 
     @Column({ nullable: false, type: 'enum', enum: TypeOfSpending })
     type: TypeOfSpending;
@@ -33,14 +34,17 @@ export class Expenses extends BaseEntity {
     })
     referenceMonth: string;
 
-    @Column({type: 'date'})
+    @Column({ type: 'date', nullable: true })
     firstInstallmentDate: Date;
 
-    @Column({ type: 'smallint' })
-    quantityParcels: number;
+    @Column({ type: 'smallint', nullable: true })
+    quantityInstallments: number;
 
-    @ManyToOne(() => ExpensesCreditCard, (card) => card.expenses, {onDelete: 'CASCADE'})
+    @ManyToOne(() => ExpensesCreditCard, (card) => card.expenses, { onDelete: 'CASCADE' })
     card: ExpensesCreditCard;
+
+    @OneToMany(() => Installments, (installments) => installments.expense, { cascade: true })
+    installments: Installments[]
 
     @CreateDateColumn({ type: 'timestamptz' })
     createdAt: Date;

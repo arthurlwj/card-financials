@@ -21,12 +21,7 @@ export class ExpensesController {
     async createExpenses(@Body() dto: CreateExpenseDto) {
 
         const created = await this.expensesService.create({
-
-            description: dto.description,
-            amount: dto.amount,
-            type: dto.type,
-            referenceMonth: dto.referenceMonth,
-            cardId: dto.cardId
+            ...dto
         });
 
         return created;
@@ -40,7 +35,7 @@ export class ExpensesController {
         type: ExpensePublicDto,
         isArray: true,
       })
-    async listExpenses() {
+    async listExpenses(): Promise<ExpensePublicDto[]> {
         return this.expensesService.listAllExpenses();
     }
 
