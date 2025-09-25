@@ -58,7 +58,8 @@ export class ExpensesService {
         const expense = await this.serviceRepo.expensesList();
 
         return expense.map((expense) => ({
-            cardId: expense.card ? expense.card.id : undefined, 
+            id: expense.id,
+            cardId: expense.card ? expense.card.id : undefined,
             description: expense.description,
             amount: expense.amount,
             type: expense.type,
@@ -75,7 +76,7 @@ export class ExpensesService {
             throw new NotFoundException('Gasto não encontrado')
         }
 
-        return findById;
+        return findById
     }
 
     async expensesUpdate(id: string, dto: UpdateExpensesDto) {
