@@ -31,7 +31,7 @@ export class ExpenseRepository {
     }
 
     async expenseListById(id: string): Promise<Expenses | null> {
-        return this.repo.findOne({ where: { id } })
+        return this.repo.findOne({ where: { id }, relations: ['card'] })
     }
 
     async expensesUpdateById(id: string, data: UpdateExpensesDto) {
