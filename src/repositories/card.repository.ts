@@ -4,7 +4,7 @@ import { CreateCardDto, UpdateCardDto } from "src/dto/cardDto";
 import { FilterCardDTO } from "src/dto/filter-cardDto";
 import { ExpensesCreditCard } from "src/expenses/card.entity";
 import { mapPostgresError } from "src/utils/postgres-error.utils";
-import { Repository } from "typeorm";
+import { DeepPartial, Repository } from "typeorm";
 
 @Injectable()
 export class ExpenseCreditCardRepository {
@@ -15,7 +15,7 @@ export class ExpenseCreditCardRepository {
     ) { }
 
 
-    async createOne(data: CreateCardDto) {
+    async createOne(data: DeepPartial<ExpensesCreditCard>): Promise<ExpensesCreditCard> {
         const cardDate = this.repo.create(data);
 
         try {
@@ -30,7 +30,7 @@ export class ExpenseCreditCardRepository {
         return this.repo.find()
     }
 
-    async cardListById(id: string): Promise<CreateCardDto | null> {
+    async cardListById(id: string): Promise<ExpensesCreditCard | null> {
         return this.repo.findOne({ where: { id } })
     }
 

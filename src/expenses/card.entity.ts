@@ -18,7 +18,10 @@ export class ExpensesCreditCard extends BaseEntity {
     })
     cardLimit: number;
 
-    @Column({ type: 'numeric', precision: 10, scale: 2 })
+    @Column({ type: 'numeric', precision: 10, scale: 2, transformer:{
+        to: (value: number) => value,
+            from: (value: string) => Number(value)
+    } })
     limitAvailable: number;
 
     @Column({type: 'smallint'})

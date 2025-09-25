@@ -12,10 +12,7 @@ export class ExpenseCreditCardController {
     @Post()
     async createCreditCard(@Body() dto: CreateCardDto) {
         const createExpense = await this.ExpenseCreditCardService.createCreditCard({
-
-            cardName: dto.cardName,
-            cardLimit: dto.cardLimit,
-            dueDay: dto.dueDay
+            ...dto
         });
 
         return createExpense;

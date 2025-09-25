@@ -37,6 +37,6 @@ export function mapPostgresError(e: unknown) {  //Transformar em classe
             });
 
             default:
-                return null;
+                return e.message;
     }
 }

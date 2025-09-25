@@ -8,9 +8,10 @@ import { ExpenseCreditCardController } from 'src/controller/card.controller';
 import { ExpenseCreditCardRepository } from 'src/repositories/card.repository';
 import { ExpenseCreditCardService } from 'src/services/card.service';
 import { ExpensesCreditCard } from './card.entity';
+import { Installments } from './installment.entity';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Expenses, ExpensesCreditCard])],
+    imports: [TypeOrmModule.forFeature([Expenses, ExpensesCreditCard, Installments])],
     controllers: [ExpensesController, ExpenseCreditCardController],
     providers: [ExpenseRepository, ExpensesService, ExpenseCreditCardRepository, ExpenseCreditCardService],
 })

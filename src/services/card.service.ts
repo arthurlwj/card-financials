@@ -1,9 +1,7 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { CreateCardDto, UpdateCardDto } from "src/dto/cardDto";
 import { FilterCardDTO } from "src/dto/filter-cardDto";
-import { ExpensesCreditCard } from "src/expenses/card.entity";
 import { ExpenseCreditCardRepository } from "src/repositories/card.repository";
-import { mapPostgresError } from "src/utils/postgres-error.utils";
 import { cardPublic } from "src/utils/retornoPropriedades";
 
 
@@ -11,19 +9,13 @@ import { cardPublic } from "src/utils/retornoPropriedades";
 export class ExpenseCreditCardService {
     constructor(private readonly serviceRepo: ExpenseCreditCardRepository) { }
 
-
     async createCreditCard(data: CreateCardDto) {
         const create = await this.serviceRepo.createOne({
-            cardName: data.cardName,
-            cardLimit: data.cardLimit,
-            dueDay: data.dueDay
+           ...data,
+           limitAvailable: data.cardLimit
         });
 
-        return {
-            cardName: create.cardName,
-            cardLimit: create.cardLimit,
-            dueDay: create.dueDay
-        }
+        return create;
     };
 
     async cardList() {

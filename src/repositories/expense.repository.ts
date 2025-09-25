@@ -1,10 +1,9 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { ExpensePublicDto } from "src/dto/ExpensePublicDto";
-import { CreateExpenseDto, UpdateExpensesDto } from "src/dto/ExpensesDto";
+import { UpdateExpensesDto } from "src/dto/ExpensesDto";
 import { Expenses } from "src/expenses/expenses.entity";
 import { mapPostgresError } from "src/utils/postgres-error.utils";
-import { Repository } from "typeorm";
+import { DeepPartial, Repository } from "typeorm";
 
 
 @Injectable()
@@ -14,18 +13,21 @@ export class ExpenseRepository {
         private readonly repo: Repository<Expenses>
     ) { }
 
-    async createOne(data: Partial<CreateExpenseDto>) {
-        const expense = this.repo.create(data);
+    async create(data: DeepPartial<Expenses>): Promise<Expenses> {
 
         try {
-            return await this.repo.save(expense);
+            return this.repo.create(data);
         } catch (e) {
             throw mapPostgresError(e) ?? e;
         }
     }
 
+    async save(expense: Expenses): Promise<Expenses> {
+        return this.repo.save(expense);
+    }
+
     async expensesList(): Promise<Expenses[]> {
-        return this.repo.find();
+        return this.repo.find({ relations: ['card'] });
     }
 
     async expenseListById(id: string): Promise<Expenses | null> {
