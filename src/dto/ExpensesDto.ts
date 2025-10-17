@@ -1,7 +1,8 @@
 import { TypeOfSpending } from "src/enums/type-of-spending.enum";
-import { IsDateString, IsDefined, IsEnum, IsInt, IsNotEmpty, IsOptional, IsPositive, IsString, Matches, MaxLength } from 'class-validator'
+import { IsDate, IsDateString, IsDefined, IsEnum, IsInt, IsNotEmpty, IsOptional, IsPositive, IsString, Matches, MaxLength } from 'class-validator'
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { PartialType } from "@nestjs/mapped-types";
+import { Type } from "class-transformer";
 
 
 
@@ -36,9 +37,21 @@ export class CreateExpenseDto {
     quantityInstallments: number;
 
     @IsOptional()
+    @IsDate()
+    @Type(() => Date)
     @Matches(/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/, { message: 'referenceMonth deve estar no formato YYYY-MM-DD' })
     @ApiPropertyOptional({ example: '2025-08-23', description: 'Será normalizado para YYYY-MM-01' })
-    referenceMonth?: string
+    referenceMonth?: Date;
+
+    @IsOptional()
+    @IsInt()
+    @IsPositive()
+    installmentNunmber?: number;
+
+    @IsOptional()
+    @IsInt()
+    @IsPositive()
+    totalInstallments?: number;
 }
 
 export class UpdateExpensesDto extends PartialType(CreateExpenseDto) { }

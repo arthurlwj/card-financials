@@ -2,10 +2,11 @@ import { Injectable, NotFoundException } from "@nestjs/common";
 import { plainToInstance } from "class-transformer";
 import { ExpensePublicDto } from "src/dto/ExpensePublicDto";
 import { CreateExpenseDto, UpdateExpensesDto } from "src/dto/ExpensesDto";
-import { Installments } from "src/expenses/installment.entity";
+import { Expenses } from "src/expenses/expenses.entity";
 import { ExpenseCreditCardRepository } from "src/repositories/card.repository";
 import { ExpenseRepository } from "src/repositories/expense.repository";
 import { toPublic } from "src/utils/retornoPropriedades";
+import { DeepPartial } from "typeorm";
 
 
 @Injectable()
@@ -27,31 +28,38 @@ export class ExpensesService {
             expense.card = card;
         };
 
+        if(!dto.quantityInstallments || dto.quantityInstallments === 1){
+            expense.installmentNumber = 1;
+            expense.totalInstallments = 1;
+        }
+
         if (dto.quantityInstallments > 1) {
-            const installments: Installments[] = []
+            const expenseArray: DeepPartial<Expenses>[] = []
             for (let i = 1; i <= dto.quantityInstallments; i++) {
                 const installmentValue = dto.amount / dto.quantityInstallments;
                 const dueDay = new Date(dto.firstInstallmentDate);
                 dueDay.setMonth(dueDay.getMonth() + (i - 1));
 
-                const installment = new Installments();
-                installment.installmentNumber = i;
-                installment.installmentValue = installmentValue;
-                installment.dueDay = dueDay;
-                installment.expense = expense;
-
-                installments.push(installment)
+                expenseArray.push({
+                    card: expense.card,
+                    description: expense.description,
+                    amount: installmentValue,
+                    type: expense.type,
+                    referenceMonth: dueDay,
+                });
             }
-            expense.installments = installments
+            const savedExpenses = await this.serviceRepo.save(expenseArray);
 
-        }
+            return plainToInstance(ExpensePublicDto, savedExpenses, {
+                excludeExtraneousValues: true,
+            });
+        };
 
-        const savedExpense = await this.serviceRepo.save(expense)
+        const savedExpenses = await this.serviceRepo.save(expense);
 
-        return plainToInstance(ExpensePublicDto, savedExpense, {
+        return plainToInstance(ExpensePublicDto, savedExpenses, {
             excludeExtraneousValues: true,
         });
-
     }
 
     async listAllExpenses(): Promise<ExpensePublicDto[]> {
@@ -63,8 +71,8 @@ export class ExpensesService {
             description: expense.description,
             amount: expense.amount,
             type: expense.type,
-            firstInstallmentDate: expense.firstInstallmentDate,
-            quantityInstallments: expense.quantityInstallments,
+            installmentNumber: expense.installmentNumber,
+            totalInstallments: expense.totalInstallments,
         }));
 
     }
