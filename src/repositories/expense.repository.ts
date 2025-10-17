@@ -22,8 +22,17 @@ export class ExpenseRepository {
         }
     }
 
-    async save(expense: Expenses): Promise<Expenses> {
-        return this.repo.save(expense);
+    async save(expense: DeepPartial<Expenses> | DeepPartial<Expenses>[]): Promise<Expenses | Expenses[]> {
+        if (Array.isArray(expense)) {
+            const entities = expense.map((item => this.repo.create(item)));
+            const saved = await this.repo.save(entities);
+            return saved as Expenses[]
+        }
+
+        const entity = this.repo.create(expense);
+        const saved = await this.repo.save(entity);
+        return saved as Expenses;
+
     }
 
     async expensesList(): Promise<Expenses[]> {

@@ -1,7 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsDateString, IsInt, IsOptional, IsPositive } from "class-validator";
+import { IsDate, IsDateString, IsInt, IsOptional, IsPositive } from "class-validator";
 import { TypeOfSpending } from "src/enums/type-of-spending.enum"
-import { InstallmentPublicDto } from "./installmentPublicDto";
 import { Expose, Type } from "class-transformer";
 
 
@@ -32,11 +31,21 @@ export class ExpensePublicDto {
     quantityInstallments?: number;
 
     @IsOptional()
+    @IsDate()
+    @Type(() => Date)
     @ApiProperty({ example: '2025-08-01', description: 'Primeiro dia do mês de referência' })
     @Expose()
-    referenceMonth?: string;
+    referenceMonth?: Date;
 
+    @IsOptional()
+    @IsInt()
+    @IsPositive()
     @Expose()
-    @Type(() => InstallmentPublicDto)
-    installments?: InstallmentPublicDto[];
+    installmentNumber?: number;
+
+    @IsOptional()
+    @IsInt()
+    @IsPositive()
+    @Expose()
+    totalInstallments?: number;
 }
