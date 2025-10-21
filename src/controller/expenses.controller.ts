@@ -1,7 +1,8 @@
-import { Post, Controller, HttpCode, HttpStatus, Body, Get, Param, ParseUUIDPipe, Patch, Delete, UseFilters, Req } from "@nestjs/common";
+import { Post, Controller, HttpCode, HttpStatus, Body, Get, Param, ParseUUIDPipe, Patch, Delete, UseFilters, Req, Query } from "@nestjs/common";
 import { ApiBadRequestResponse, ApiConflictResponse, ApiCreatedResponse, ApiNoContentResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiParam, ApiTags } from "@nestjs/swagger";
 import { ExpensePublicDto } from "src/dto/ExpensePublicDto";
 import { CreateExpenseDto, UpdateExpensesDto } from "src/dto/ExpensesDto";
+import { FilterExpenseDto } from "src/dto/filter-expenseDto";
 import { ExpensesService } from "src/services/expenses.service";
 
 
@@ -29,25 +30,15 @@ export class ExpensesController {
     }
 
     @Get()
-    @ApiOperation({ summary: 'Listar gastos' })
-    @ApiOkResponse({
-        description: 'Lista de gastos cadastrados',
-        type: ExpensePublicDto,
-        isArray: true,
-      })
-    async listExpenses(): Promise<ExpensePublicDto[]> {
-        return this.expensesService.listAllExpenses();
-    }
+        async filterExpense(@Query() data: FilterExpenseDto) {
+            return this.expensesService.expenseFilter(data);
+        }
 
     @Get(':id')
     @ApiOperation({ summary: 'Buscar por ID' })
     @ApiParam({ name: 'id', type: String, description: 'UUID do gasto' })
     @ApiOkResponse({ type: ExpensePublicDto })
     @ApiNotFoundResponse({ description: 'Gasto não encontrado' })
-
-    async listExpenseById(@Param('id', ParseUUIDPipe) id: string) {
-        return this.expensesService.expenseListById(id);
-    }
 
     @Patch(':id')
     @ApiOperation({ summary: 'Atualizar gasto por ID' })

@@ -46,7 +46,7 @@ export class CreateExpenseDto {
     @IsOptional()
     @IsInt()
     @IsPositive()
-    installmentNunmber?: number;
+    installmentNumber?: number;
 
     @IsOptional()
     @IsInt()

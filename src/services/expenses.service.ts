@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from "@nestjs/common";
 import { plainToInstance } from "class-transformer";
 import { ExpensePublicDto } from "src/dto/ExpensePublicDto";
 import { CreateExpenseDto, UpdateExpensesDto } from "src/dto/ExpensesDto";
+import { FilterExpenseDto } from "src/dto/filter-expenseDto";
 import { Expenses } from "src/expenses/expenses.entity";
 import { ExpenseCreditCardRepository } from "src/repositories/card.repository";
 import { ExpenseRepository } from "src/repositories/expense.repository";
@@ -28,7 +29,7 @@ export class ExpensesService {
             expense.card = card;
         };
 
-        if(!dto.quantityInstallments || dto.quantityInstallments === 1){
+        if (!dto.quantityInstallments || dto.quantityInstallments === 1) {
             expense.installmentNumber = 1;
             expense.totalInstallments = 1;
         }
@@ -62,29 +63,20 @@ export class ExpensesService {
         });
     }
 
-    async listAllExpenses(): Promise<ExpensePublicDto[]> {
-        const expense = await this.serviceRepo.expensesList();
 
-        return expense.map((expense) => ({
-            id: expense.id,
-            cardId: expense.card ? expense.card.id : undefined,
-            description: expense.description,
-            amount: expense.amount,
-            type: expense.type,
-            installmentNumber: expense.installmentNumber,
-            totalInstallments: expense.totalInstallments,
-        }));
+    async expenseFilter(data: FilterExpenseDto): Promise<ExpensePublicDto[]> {
+        const expenseFilter = await this.serviceRepo.filterExpenses(data);
 
-    }
+        if (expenseFilter.length === 0) {
+            throw new NotFoundException('Gasto não encontrado');
 
-    async expenseListById(id: string) {
-        const findById = await this.serviceRepo.expenseListById(id);
-
-        if (!findById) {
-            throw new NotFoundException('Gasto não encontrado')
         }
 
-        return findById
+        return expenseFilter.map(expense => plainToInstance(ExpensePublicDto, expense, {
+            excludeExtraneousValues: true,
+        }),
+        );
+
     }
 
     async expensesUpdate(id: string, dto: UpdateExpensesDto) {
