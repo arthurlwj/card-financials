@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { UpdateExpensesDto } from "src/dto/ExpensesDto";
+import { CreateExpenseDto, UpdateExpensesDto } from "src/dto/ExpensesDto";
+import { FilterExpenseDto } from "src/dto/filter-expenseDto";
 import { Expenses } from "src/expenses/expenses.entity";
 import { mapPostgresError } from "src/utils/postgres-error.utils";
 import { DeepPartial, Repository } from "typeorm";
@@ -35,12 +36,20 @@ export class ExpenseRepository {
 
     }
 
-    async expensesList(): Promise<Expenses[]> {
-        return this.repo.find({ relations: ['card'] });
-    }
-
     async expenseListById(id: string): Promise<Expenses | null> {
         return this.repo.findOne({ where: { id }, relations: ['card'] })
+    }
+
+    async filterExpenses(data: FilterExpenseDto) {
+        const query = this.repo.createQueryBuilder('expense');
+
+        if(data.cardId) query.andWhere('expense.cardId = :cardId', {cardId: data.cardId});
+        if(data.description) query.andWhere('expense.description = :description', {description: data.description});
+        if(data.type) query.andWhere('expense.type = :type', {type: data.type});
+        if(data.amount) query.andWhere('expense.amount = :amount', {amount: data.amount});
+
+        return query.getMany();
+
     }
 
     async expensesUpdateById(id: string, data: UpdateExpensesDto) {

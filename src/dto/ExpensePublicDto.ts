@@ -9,6 +9,9 @@ export class ExpensePublicDto {
     @Expose()
     cardId?: string;
 
+    @Expose()
+    id: string;
+
     @ApiProperty({ example: 'Cartão Nubank' })
     @Expose()
     description: string;
