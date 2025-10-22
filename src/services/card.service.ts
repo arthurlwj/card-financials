@@ -1,8 +1,8 @@
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
-import { CreateCardDto, UpdateCardDto } from "src/dto/cardDto";
-import { FilterCardDTO } from "src/dto/filter-cardDto";
+import { CreateCardDto, UpdateCardDto } from "src/dto/card.dto";
+import { FilterCardDTO } from "src/dto/filter-card.dto";
 import { ExpenseCreditCardRepository } from "src/repositories/card.repository";
-import { cardPublic } from "src/utils/retornoPropriedades";
+import { cardPublic } from "src/utils/property-return";
 
 
 @Injectable()
@@ -26,7 +26,7 @@ export class ExpenseCreditCardService {
         const findById = this.serviceRepo.cardListById(id);
 
         if (!findById) {
-            throw new NotFoundException('Gasto de cartão não encontrado');
+            throw new NotFoundException('Expense not found');
         }
 
         return findById;
@@ -36,7 +36,7 @@ export class ExpenseCreditCardService {
         const cardFilter = await this.serviceRepo.fieldFilter(data);
 
         if (cardFilter.length === 0) {
-            throw new NotFoundException('Cartão de crédito não encontrado')
+            throw new NotFoundException('Credit card not found')
         }
 
         return cardFilter;
@@ -45,7 +45,7 @@ export class ExpenseCreditCardService {
     async cardUpdate(id: string, data: UpdateCardDto) {
         const updateResult = await this.serviceRepo.cardUpdate(id, data)
 
-        if (!updateResult.affected) throw new NotFoundException('Cartão de crédito não encontrado')
+        if (!updateResult.affected) throw new NotFoundException('Credit card not found')
 
         const cardUpdated = await this.serviceRepo.cardListById(id)
 
@@ -56,9 +56,9 @@ export class ExpenseCreditCardService {
     async cardDelete(id: string) {
         const deleteResult = await this.serviceRepo.cardDelete(id);
 
-        if (!deleteResult.affected) throw new NotFoundException('Cartão de Crédito não encontrado')
+        if (!deleteResult.affected) throw new NotFoundException('Credit card not found')
 
-        return { message: 'Cartão removido com sucesso' }
+        return { message: 'Card removed successfully' }
     }
 
     async subtractFromAvailableLimit(cardId: string, amount: number): Promise <void>{

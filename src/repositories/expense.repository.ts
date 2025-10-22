@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { CreateExpenseDto, UpdateExpensesDto } from "src/dto/ExpensesDto";
-import { FilterExpenseDto } from "src/dto/filter-expenseDto";
+import { UpdateExpensesDto } from "src/dto/expense.dto";
+import { FilterExpenseDto } from "src/dto/filter-expense.dto";
 import { Expenses } from "src/expenses/expenses.entity";
 import { mapPostgresError } from "src/utils/postgres-error.utils";
 import { DeepPartial, Repository } from "typeorm";

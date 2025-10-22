@@ -14,7 +14,7 @@ export class ExpensePublicDto {
     @Expose()
     id: string;
 
-    @ApiProperty({ example: 'Cartão Nubank' })
+    @ApiProperty({ example: 'Nubank card' })
     @Expose()
     description: string;
 
@@ -38,7 +38,7 @@ export class ExpensePublicDto {
     @IsOptional()
     @IsDate()
     @Type(() => Date)
-    @ApiProperty({ example: '2025-08-01', description: 'Primeiro dia do mês de referência' })
+    @ApiProperty({ example: '2025-08-01', description: 'First Day Reference Month' })
     @Expose()
     referenceMonth?: Date;
 

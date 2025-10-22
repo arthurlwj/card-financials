@@ -4,13 +4,13 @@ export class FilterCardDTO {
 
     @IsOptional()
     @IsString()
-    cardName: string;
+    cardName?: string;
 
     @IsOptional()
     @IsNumber()
-    cardLimit: number;
+    cardLimit?: number;
 
     @IsOptional()
     @IsNumber()
-    dueDay: number;
+    dueDay?: number;
 }

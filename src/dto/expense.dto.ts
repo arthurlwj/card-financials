@@ -31,19 +31,19 @@ export class CreateExpenseDto {
     @IsNotEmpty({ message: 'firstInstallmentDate is required when quantityInstallments is greater than 1' })
     @IsDateString({}, { message: 'firstInstallmentDate must be a valid ISO date string' })
     @IsOptional()
-    @IsDateString({}, { message: 'firstInstallmentDate deve estar no formato YYYY-MM-DD' })
+    @IsDateString({}, { message: 'firstInstallmentDate must be in YYYY-MM-DD format' })
     firstInstallmentDate: string;
 
     @IsOptional()
     @IsInt()
     @IsPositive()
-    quantityInstallments: number;
+    quantityInstallments?: number;
 
     @IsOptional()
     @IsDate()
     @Type(() => Date)
-    @Matches(/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/, { message: 'referenceMonth deve estar no formato YYYY-MM-DD' })
-    @ApiPropertyOptional({ example: '2025-08-23', description: 'Será normalizado para YYYY-MM-01' })
+    @Matches(/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/, { message: 'firstInstallmentDate must be in YYYY-MM-DD format' })
+    @ApiPropertyOptional({ example: '2025-08-23', description: 'It will be normalized to YYYY-MM-01' })
     referenceMonth?: Date;
 
     @IsOptional()

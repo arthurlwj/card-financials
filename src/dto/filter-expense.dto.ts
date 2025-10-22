@@ -1,5 +1,5 @@
 import { TypeOfSpending } from "src/enums/type-of-spending.enum";
-import { IsEnum, IsInt, IsOptional, IsPositive, IsString } from 'class-validator'
+import { IsEnum, IsOptional, IsPositive, IsString } from 'class-validator'
 
 
 export class FilterExpenseDto {

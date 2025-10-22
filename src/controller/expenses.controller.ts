@@ -1,8 +1,8 @@
 import { Post, Controller, HttpCode, HttpStatus, Body, Get, Param, ParseUUIDPipe, Patch, Delete, UseFilters, Req, Query } from "@nestjs/common";
 import { ApiBadRequestResponse, ApiConflictResponse, ApiCreatedResponse, ApiNoContentResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiParam, ApiTags } from "@nestjs/swagger";
-import { ExpensePublicDto } from "src/dto/ExpensePublicDto";
-import { CreateExpenseDto, UpdateExpensesDto } from "src/dto/ExpensesDto";
-import { FilterExpenseDto } from "src/dto/filter-expenseDto";
+import { ExpensePublicDto } from "src/dto/expense-public.dto";
+import { CreateExpenseDto, UpdateExpensesDto } from "src/dto/expense.dto";
+import { FilterExpenseDto } from "src/dto/filter-expense.dto";
 import { ExpensesService } from "src/services/expenses.service";
 
 
@@ -14,7 +14,7 @@ export class ExpensesController {
     ) { }
 
     @Post()
-    @ApiOperation({ summary: 'Criar gasto' })
+    @ApiOperation({ summary: 'Create expense' })
     @ApiCreatedResponse({type: ExpensePublicDto})
     @ApiBadRequestResponse({ description: 'Validation error' })
     @ApiConflictResponse({ description: 'Unique violation' })
@@ -36,10 +36,10 @@ export class ExpensesController {
 
 
     @Patch(':id')
-    @ApiOperation({ summary: 'Atualizar gasto por ID' })
-    @ApiParam({ name: 'id', schema: { type: 'string', format: 'uuid' }, description: 'UUID do gasto' })
+    @ApiOperation({ summary: 'Update expense for ID' })
+    @ApiParam({ name: 'id', schema: { type: 'string', format: 'uuid' }, description: 'UUID expense' })
     @ApiOkResponse({ type: ExpensePublicDto})
-    @ApiNotFoundResponse({ description: 'Gasto não encontrado' })
+    @ApiNotFoundResponse({ description: 'Expense not found' })
 
     async expensesUpdate(@Body() dto: UpdateExpensesDto, @Param('id', ParseUUIDPipe) id: string) {
         return this.expensesService.expensesUpdate(id, dto)
@@ -49,9 +49,9 @@ export class ExpensesController {
     @Delete(':id')
     @HttpCode(HttpStatus.NO_CONTENT)
     @ApiOperation({ summary: 'Deletar gasto por ID' })
-    @ApiParam({ name: 'id', type: String, description: 'UUID do gasto' })
-    @ApiNoContentResponse({ description: 'Gasto deletado com sucesso' })
-    @ApiNotFoundResponse({ description: 'Gasto não encontrado' })
+    @ApiParam({ name: 'id', type: String, description: 'UUID expense' })
+    @ApiNoContentResponse({ description: 'expense successfully removed' })
+    @ApiNotFoundResponse({ description: 'Expense not found' })
     async expensesDelete(@Param('id', ParseUUIDPipe) id: string) {
         return this.expensesService.expensesDelete(id)
     }
