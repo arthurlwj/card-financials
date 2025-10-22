@@ -41,16 +41,18 @@ export class ExpenseRepository {
     }
 
     async filterExpenses(data: FilterExpenseDto) {
-        const query = this.repo.createQueryBuilder('expense');
+        const query = this.repo.createQueryBuilder('expense').leftJoinAndSelect('expense.card', 'card')
 
-        if(data.cardId) query.andWhere('expense.cardId = :cardId', {cardId: data.cardId});
+        if(data.cardId) query.andWhere('card.id = :cardId', {cardId: data.cardId});
         if(data.description) query.andWhere('expense.description = :description', {description: data.description});
         if(data.type) query.andWhere('expense.type = :type', {type: data.type});
         if(data.amount) query.andWhere('expense.amount = :amount', {amount: data.amount});
 
         return query.getMany();
 
+
     }
+    
 
     async expensesUpdateById(id: string, data: UpdateExpensesDto) {
 

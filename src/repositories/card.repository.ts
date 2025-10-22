@@ -60,4 +60,17 @@ export class ExpenseCreditCardRepository {
             throw mapPostgresError(e) ?? e;
         }
     }
+
+    async save(card: DeepPartial<ExpensesCreditCard> | DeepPartial<ExpensesCreditCard>[]): Promise<ExpensesCreditCard | ExpensesCreditCard[]> {
+            if (Array.isArray(card)) {
+                const entities = card.map((item => this.repo.create(item)));
+                const saved = await this.repo.save(entities);
+                return saved as ExpensesCreditCard[]
+            }
+    
+            const entity = this.repo.create(card);
+            const saved = await this.repo.save(entity);
+            return saved as ExpensesCreditCard;
+    
+        }
 }

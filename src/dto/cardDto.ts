@@ -17,7 +17,7 @@ export class CreateCardDto {
 
     @IsPositive()
     @IsOptional()
-    limitAvailable: number;
+    limitAvailable?: number;
 
 }
 
