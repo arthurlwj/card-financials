@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { plainToInstance } from "class-transformer";
 import { ExpensePublicDto } from "src/dto/ExpensePublicDto";
 import { CreateExpenseDto, UpdateExpensesDto } from "src/dto/ExpensesDto";
@@ -8,6 +8,7 @@ import { ExpenseCreditCardRepository } from "src/repositories/card.repository";
 import { ExpenseRepository } from "src/repositories/expense.repository";
 import { toPublic } from "src/utils/retornoPropriedades";
 import { DeepPartial } from "typeorm";
+import { ExpenseCreditCardService } from "./card.service";
 
 
 @Injectable()
@@ -15,6 +16,7 @@ export class ExpensesService {
     constructor(
         private readonly serviceRepo: ExpenseRepository,
         private readonly cardsRepository: ExpenseCreditCardRepository,
+        private readonly cardsService: ExpenseCreditCardService
     ) { }
 
     async create(dto: CreateExpenseDto): Promise<ExpensePublicDto> {
@@ -23,7 +25,7 @@ export class ExpensesService {
 
         const expense = await this.serviceRepo.create(expensesData);
 
-        if (dto.cardId) {
+        if (cardId) {
             const card = await this.cardsRepository.cardListById(cardId)
             if (!card) throw new NotFoundException('Card not found');
             expense.card = card;
@@ -35,6 +37,12 @@ export class ExpensesService {
         }
 
         if (dto.quantityInstallments > 1) {
+            if (!dto.firstInstallmentDate) {
+                throw new BadRequestException('firstInstallmentDate is required when creating multiple installments');
+            }
+            if (dto.cardId) {
+                await this.cardsService.subtractFromAvailableLimit(cardId, dto.amount)
+            }
             const expenseArray: DeepPartial<Expenses>[] = []
             for (let i = 1; i <= dto.quantityInstallments; i++) {
                 const installmentValue = dto.amount / dto.quantityInstallments;
@@ -47,14 +55,23 @@ export class ExpensesService {
                     amount: installmentValue,
                     type: expense.type,
                     referenceMonth: dueDay,
+                    installmentNumber: i,
+                    totalInstallments: expense.quantityInstallments,
+                    firstInstallmentDate: dto.firstInstallmentDate,
+                    quantityInstallments: dto.quantityInstallments
                 });
             }
+
             const savedExpenses = await this.serviceRepo.save(expenseArray);
 
             return plainToInstance(ExpensePublicDto, savedExpenses, {
                 excludeExtraneousValues: true,
             });
         };
+
+        if (dto.cardId) {
+            await this.cardsService.subtractFromAvailableLimit(cardId, dto.amount)
+        }
 
         const savedExpenses = await this.serviceRepo.save(expense);
 
@@ -92,6 +109,16 @@ export class ExpensesService {
     }
 
     async expensesDelete(id: string) {
+        const expense = await this.serviceRepo.expenseListById(id)
+
+        if (!expense) {
+            throw new NotFoundException('Expense not found');
+        }
+
+        if (expense.card) {
+            await this.cardsService.restoreFromAvailableLimit(expense.card.id, expense.amount)
+        }
+
         const deleteResult = await this.serviceRepo.expensesDelete(id)
 
         if (deleteResult.affected === 0) {

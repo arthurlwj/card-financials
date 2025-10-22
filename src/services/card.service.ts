@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { CreateCardDto, UpdateCardDto } from "src/dto/cardDto";
 import { FilterCardDTO } from "src/dto/filter-cardDto";
 import { ExpenseCreditCardRepository } from "src/repositories/card.repository";
@@ -59,6 +59,35 @@ export class ExpenseCreditCardService {
         if (!deleteResult.affected) throw new NotFoundException('Cartão de Crédito não encontrado')
 
         return { message: 'Cartão removido com sucesso' }
+    }
+
+    async subtractFromAvailableLimit(cardId: string, amount: number): Promise <void>{
+
+        const card = await this.serviceRepo.cardListById(cardId);
+
+        if(!card){
+            throw new NotFoundException('Card not found')
+        }
+
+        if(card.limitAvailable < amount){
+            throw new BadRequestException('Insufficient limit for this expense')
+        }
+
+        card.limitAvailable -= amount;
+
+        await this.serviceRepo.save(card)
+    }
+
+    async restoreFromAvailableLimit(cardId: string, amount: number): Promise <void> {
+        const card = await this.serviceRepo.cardListById(cardId)
+
+        if(!card){
+            throw new NotFoundException('Card is not found')
+        }
+
+        card.limitAvailable += amount
+
+        await this.serviceRepo.save(card);
     }
 
 }

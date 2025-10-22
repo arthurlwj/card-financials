@@ -1,5 +1,5 @@
 import { TypeOfSpending } from "src/enums/type-of-spending.enum";
-import { IsDate, IsDateString, IsDefined, IsEnum, IsInt, IsNotEmpty, IsOptional, IsPositive, IsString, Matches, MaxLength } from 'class-validator'
+import { IsDate, IsDateString, IsDefined, IsEnum, IsInt, IsNotEmpty, IsOptional, IsPositive, IsString, Matches, MaxLength, ValidateIf } from 'class-validator'
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { PartialType } from "@nestjs/mapped-types";
 import { Type } from "class-transformer";
@@ -27,6 +27,9 @@ export class CreateExpenseDto {
     @ApiProperty({ enum: TypeOfSpending, enumName: 'TypeOßfSpending' })
     type: TypeOfSpending;
 
+    @ValidateIf((o) => o.quantityInstallments > 1)
+    @IsNotEmpty({ message: 'firstInstallmentDate is required when quantityInstallments is greater than 1' })
+    @IsDateString({}, { message: 'firstInstallmentDate must be a valid ISO date string' })
     @IsOptional()
     @IsDateString({}, { message: 'firstInstallmentDate deve estar no formato YYYY-MM-DD' })
     firstInstallmentDate: string;

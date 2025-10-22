@@ -17,14 +17,4 @@ export class FilterExpenseDto {
     @IsOptional()
     @IsEnum(TypeOfSpending)
     type?: TypeOfSpending;
-
-    // @IsOptional()
-    // @IsInt()
-    // @IsPositive()
-    // installmentNumber?: number;
-
-    // @IsOptional()
-    // @IsInt()
-    // @IsPositive()
-    // totalInstallments?: number;
 }

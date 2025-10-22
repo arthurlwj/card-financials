@@ -1,12 +1,14 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsDate, IsDateString, IsInt, IsOptional, IsPositive } from "class-validator";
 import { TypeOfSpending } from "src/enums/type-of-spending.enum"
-import { Expose, Type } from "class-transformer";
+import { Expose, Transform, Type } from "class-transformer";
 
 
 export class ExpensePublicDto {
 
     @Expose()
+    @Type(() => String)
+    @Transform(({ obj }) => obj.card?.id)
     cardId?: string;
 
     @Expose()
@@ -27,7 +29,7 @@ export class ExpensePublicDto {
     @IsOptional()
     @IsDateString({}, { message: 'firstInstallmentDate deve estar no formato YYYY-MM-DD' })
     firstInstallmentDate?: Date;
-    
+
     @IsOptional()
     @IsInt()
     @IsPositive()

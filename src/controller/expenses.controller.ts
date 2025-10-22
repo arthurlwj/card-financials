@@ -34,11 +34,6 @@ export class ExpensesController {
             return this.expensesService.expenseFilter(data);
         }
 
-    @Get(':id')
-    @ApiOperation({ summary: 'Buscar por ID' })
-    @ApiParam({ name: 'id', type: String, description: 'UUID do gasto' })
-    @ApiOkResponse({ type: ExpensePublicDto })
-    @ApiNotFoundResponse({ description: 'Gasto não encontrado' })
 
     @Patch(':id')
     @ApiOperation({ summary: 'Atualizar gasto por ID' })
@@ -58,7 +53,7 @@ export class ExpensesController {
     @ApiNoContentResponse({ description: 'Gasto deletado com sucesso' })
     @ApiNotFoundResponse({ description: 'Gasto não encontrado' })
     async expensesDelete(@Param('id', ParseUUIDPipe) id: string) {
-        return await this.expensesService.expensesDelete(id)
+        return this.expensesService.expensesDelete(id)
     }
 
 }
