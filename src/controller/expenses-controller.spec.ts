@@ -1,0 +1,56 @@
+import { ExpensesController } from "./expenses.controller";
+import { Expenses } from "src/expenses/expenses.entity";
+import { Test, TestingModule } from '@nestjs/testing';
+import { DeepPartial } from "typeorm";
+import { TypeOfSpending } from "src/enums/type-of-spending.enum";
+import { ExpensesService } from "src/services/expenses.service";
+
+describe('ExpensesController', () => {
+  let controller: ExpensesController;
+  let service: jest.Mocked<ExpensesService>;
+
+  const mockExpenses: DeepPartial<Expenses>[] = [
+    {
+      id: '1',
+      description: 'Teste Mock',
+      amount: 1000,
+      type: TypeOfSpending.FIXED,
+      referenceMonth: '2025-08-01',
+    },
+    {
+      id: '2',
+      description: 'Teste Mock 2',
+      amount: 250.5,
+      type: TypeOfSpending.VARIABLE,
+      referenceMonth: '2025-08-01',
+    },
+  ];
+
+  beforeEach(async () => {
+    const serviceMock = {
+      expenseFilter: jest.fn().mockResolvedValue(mockExpenses as Expenses[]),
+    } as unknown as jest.Mocked<ExpensesService>;
+
+    const module: TestingModule = await Test.createTestingModule({
+      controllers: [ExpensesController],
+      providers: [{ provide: ExpensesService, useValue: serviceMock }],
+    }).compile();
+
+    controller = module.get<ExpensesController>(ExpensesController);
+    service = module.get(ExpensesService);
+  });
+
+  it('should return a list of expenses', async () => {
+    const mockFilterDto = { type: TypeOfSpending.VARIABLE };
+    const result = await controller.filterExpense(mockFilterDto);
+
+    expect(service.expenseFilter).toHaveBeenCalledTimes(1);
+    expect(service.expenseFilter).toHaveBeenCalledWith(mockFilterDto);
+    expect(result).toEqual(mockExpenses);
+  });
+
+  it('should propagate error from service', async () => {
+    service.expenseFilter.mockRejectedValueOnce(new Error('DB down'));
+    await expect(controller.filterExpense({ type: TypeOfSpending.VARIABLE })).rejects.toThrow('DB down');
+  });
+});

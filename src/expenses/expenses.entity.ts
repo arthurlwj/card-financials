@@ -1,6 +1,6 @@
 import { TypeOfSpending } from "src/enums/type-of-spending.enum";
 import { BaseEntity, Column, CreateDateColumn, Entity, Index, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-import { ExpensesCreditCard } from "./card.entity";
+import { Card } from "./card.entity";
 
 
 @Entity('expenses')
@@ -43,8 +43,8 @@ export class Expenses extends BaseEntity {
     @Column({type: 'smallint', nullable: true})
     totalInstallments: number
 
-    @ManyToOne(() => ExpensesCreditCard, (card) => card.expenses, { onDelete: 'CASCADE' })
-    card: ExpensesCreditCard;
+    @ManyToOne(() => Card, (card) => card.expenses, { onDelete: 'CASCADE' })
+    card: Card;
 
     @CreateDateColumn({ type: 'timestamptz' })
     createdAt: Date;

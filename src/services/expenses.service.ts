@@ -1,12 +1,12 @@
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { plainToInstance } from "class-transformer";
-import { ExpensePublicDto } from "src/dto/ExpensePublicDto";
-import { CreateExpenseDto, UpdateExpensesDto } from "src/dto/ExpensesDto";
-import { FilterExpenseDto } from "src/dto/filter-expenseDto";
+import { ExpensePublicDto } from "src/dto/expense-public.dto";
+import { CreateExpenseDto, UpdateExpensesDto } from "src/dto/expense.dto";
+import { FilterExpenseDto } from "src/dto/filter-expense.dto";
 import { Expenses } from "src/expenses/expenses.entity";
 import { ExpenseCreditCardRepository } from "src/repositories/card.repository";
 import { ExpenseRepository } from "src/repositories/expense.repository";
-import { toPublic } from "src/utils/retornoPropriedades";
+import { toPublic } from "src/utils/property-return";
 import { DeepPartial } from "typeorm";
 import { ExpenseCreditCardService } from "./card.service";
 
@@ -85,7 +85,7 @@ export class ExpensesService {
         const expenseFilter = await this.serviceRepo.filterExpenses(data);
 
         if (expenseFilter.length === 0) {
-            throw new NotFoundException('Gasto não encontrado');
+            throw new NotFoundException('Expense not found');
 
         }
 
@@ -100,7 +100,7 @@ export class ExpensesService {
         const updateResult = await this.serviceRepo.expensesUpdateById(id, dto);
 
         if (!updateResult.affected) {
-            throw new NotFoundException('Gasto não encontrado')
+            throw new NotFoundException('Expense not found')
         }
 
         const updateExpenses = await this.serviceRepo.expenseListById(id);
@@ -122,9 +122,9 @@ export class ExpensesService {
         const deleteResult = await this.serviceRepo.expensesDelete(id)
 
         if (deleteResult.affected === 0) {
-            throw new NotFoundException('Gasto não encontrado')
+            throw new NotFoundException('Expense not found')
         }
 
-        return { message: 'Gasto removido com sucesso' };
+        return { message: 'Expense removed successfully' };
     }
 }

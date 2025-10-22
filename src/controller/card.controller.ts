@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Param, ParseUUIDPipe, Patch, Post, Query } from "@nestjs/common";
-import { CreateCardDto, UpdateCardDto } from "src/dto/cardDto";
-import { FilterCardDTO } from "src/dto/filter-cardDto";
+import { CreateCardDto, UpdateCardDto } from "src/dto/card.dto";
+import { FilterCardDTO } from "src/dto/filter-card.dto";
 import { ExpenseCreditCardService } from "src/services/card.service";
 
 

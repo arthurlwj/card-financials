@@ -1,5 +1,4 @@
-import { CreateCardDto } from "src/dto/cardDto";
-import { ExpensesCreditCard } from "src/expenses/card.entity";
+import { CreateCardDto } from "src/dto/card.dto";
 import { Expenses } from "src/expenses/expenses.entity";
 
 function toPublic(e: Expenses) {

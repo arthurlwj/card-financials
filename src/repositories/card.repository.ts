@@ -1,8 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { CreateCardDto, UpdateCardDto } from "src/dto/cardDto";
-import { FilterCardDTO } from "src/dto/filter-cardDto";
-import { ExpensesCreditCard } from "src/expenses/card.entity";
+import { CreateCardDto, UpdateCardDto } from "src/dto/card.dto";
+import { FilterCardDTO } from "src/dto/filter-card.dto";
+import { Card } from "src/expenses/card.entity";
 import { mapPostgresError } from "src/utils/postgres-error.utils";
 import { DeepPartial, Repository } from "typeorm";
 
@@ -10,12 +10,12 @@ import { DeepPartial, Repository } from "typeorm";
 export class ExpenseCreditCardRepository {
 
     constructor(
-        @InjectRepository(ExpensesCreditCard)
-        private readonly repo: Repository<ExpensesCreditCard>
+        @InjectRepository(Card)
+        private readonly repo: Repository<Card>
     ) { }
 
 
-    async createOne(data: DeepPartial<ExpensesCreditCard>): Promise<ExpensesCreditCard> {
+    async createOne(data: DeepPartial<Card>): Promise<Card> {
         const cardDate = this.repo.create(data);
 
         try {
@@ -30,7 +30,7 @@ export class ExpenseCreditCardRepository {
         return this.repo.find()
     }
 
-    async cardListById(id: string): Promise<ExpensesCreditCard | null> {
+    async cardListById(id: string): Promise<Card | null> {
         return this.repo.findOne({ where: { id } })
     }
 
@@ -61,16 +61,16 @@ export class ExpenseCreditCardRepository {
         }
     }
 
-    async save(card: DeepPartial<ExpensesCreditCard> | DeepPartial<ExpensesCreditCard>[]): Promise<ExpensesCreditCard | ExpensesCreditCard[]> {
+    async save(card: DeepPartial<Card> | DeepPartial<Card>[]): Promise<Card | Card[]> {
             if (Array.isArray(card)) {
                 const entities = card.map((item => this.repo.create(item)));
                 const saved = await this.repo.save(entities);
-                return saved as ExpensesCreditCard[]
+                return saved as Card[]
             }
     
             const entity = this.repo.create(card);
             const saved = await this.repo.save(entity);
-            return saved as ExpensesCreditCard;
+            return saved as Card;
     
         }
 }
