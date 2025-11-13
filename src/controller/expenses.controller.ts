@@ -1,5 +1,5 @@
 import { Post, Controller, HttpCode, HttpStatus, Body, Get, Param, ParseUUIDPipe, Patch, Delete, UseFilters, Req, Query } from "@nestjs/common";
-import { ApiBadRequestResponse, ApiConflictResponse, ApiCreatedResponse, ApiNoContentResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiParam, ApiTags } from "@nestjs/swagger";
+import { ApiBadRequestResponse, ApiConflictResponse, ApiCreatedResponse, ApiNoContentResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiParam, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { ExpensePublicDto } from "src/dto/expense-public.dto";
 import { CreateExpenseDto, UpdateExpensesDto } from "src/dto/expense.dto";
 import { FilterExpenseDto } from "src/dto/filter-expense.dto";
@@ -15,7 +15,7 @@ export class ExpensesController {
 
     @Post()
     @ApiOperation({ summary: 'Create expense' })
-    @ApiCreatedResponse({type: ExpensePublicDto})
+    @ApiCreatedResponse({ type: ExpensePublicDto })
     @ApiBadRequestResponse({ description: 'Validation error' })
     @ApiConflictResponse({ description: 'Unique violation' })
     @HttpCode(HttpStatus.CREATED)
@@ -30,15 +30,23 @@ export class ExpensesController {
     }
 
     @Get()
-        async filterExpense(@Query() data: FilterExpenseDto) {
-            return this.expensesService.expenseFilter(data);
-        }
+    @ApiOperation({ summary: 'Get all expense' })
+    @ApiResponse({ status: 200, description: 'OK' })
+    async filterExpense(@Query() data: FilterExpenseDto) {
+        return this.expensesService.expenseFilter(data);
+    }
 
+    @Get(':id')
+     @ApiOperation({ summary: 'Get expense for ID' })
+     @ApiResponse({ status: 200, description: 'OK' })
+    async getFindById(@Param('id', ParseUUIDPipe) id: string){
+        return this.expensesService.expenseById(id)
+    }
 
     @Patch(':id')
     @ApiOperation({ summary: 'Update expense for ID' })
     @ApiParam({ name: 'id', schema: { type: 'string', format: 'uuid' }, description: 'UUID expense' })
-    @ApiOkResponse({ type: ExpensePublicDto})
+    @ApiOkResponse({ type: ExpensePublicDto })
     @ApiNotFoundResponse({ description: 'Expense not found' })
 
     async expensesUpdate(@Body() dto: UpdateExpensesDto, @Param('id', ParseUUIDPipe) id: string) {
@@ -48,7 +56,7 @@ export class ExpensesController {
 
     @Delete(':id')
     @HttpCode(HttpStatus.NO_CONTENT)
-    @ApiOperation({ summary: 'Deletar gasto por ID' })
+    @ApiOperation({ summary: 'Delete expense for ID' })
     @ApiParam({ name: 'id', type: String, description: 'UUID expense' })
     @ApiNoContentResponse({ description: 'expense successfully removed' })
     @ApiNotFoundResponse({ description: 'Expense not found' })
