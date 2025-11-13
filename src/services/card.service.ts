@@ -11,26 +11,12 @@ export class ExpenseCreditCardService {
 
     async createCreditCard(data: CreateCardDto) {
         const create = await this.serviceRepo.createOne({
-           ...data,
-           limitAvailable: data.cardLimit
+            ...data,
+            limitAvailable: data.cardLimit
         });
 
         return create;
     };
-
-    async cardList() {
-        return this.serviceRepo.cardList()
-    }
-
-    async cardListById(id: string) {
-        const findById = this.serviceRepo.cardListById(id);
-
-        if (!findById) {
-            throw new NotFoundException('Expense not found');
-        }
-
-        return findById;
-    }
 
     async filterCards(data: FilterCardDTO) {
         const cardFilter = await this.serviceRepo.fieldFilter(data);
@@ -40,6 +26,16 @@ export class ExpenseCreditCardService {
         }
 
         return cardFilter;
+    }
+
+    async cardListById(id: string) {
+        const findById = this.serviceRepo.cardListById(id);
+
+        if (!findById) {
+            throw new NotFoundException('Card not found');
+        }
+
+        return findById;
     }
 
     async cardUpdate(id: string, data: UpdateCardDto) {
@@ -61,15 +57,15 @@ export class ExpenseCreditCardService {
         return { message: 'Card removed successfully' }
     }
 
-    async subtractFromAvailableLimit(cardId: string, amount: number): Promise <void>{
+    async subtractFromAvailableLimit(cardId: string, amount: number): Promise<void> {
 
         const card = await this.serviceRepo.cardListById(cardId);
 
-        if(!card){
+        if (!card) {
             throw new NotFoundException('Card not found')
         }
 
-        if(card.limitAvailable < amount){
+        if (card.limitAvailable < amount) {
             throw new BadRequestException('Insufficient limit for this expense')
         }
 
@@ -78,10 +74,10 @@ export class ExpenseCreditCardService {
         await this.serviceRepo.save(card)
     }
 
-    async restoreFromAvailableLimit(cardId: string, amount: number): Promise <void> {
+    async restoreFromAvailableLimit(cardId: string, amount: number): Promise<void> {
         const card = await this.serviceRepo.cardListById(cardId)
 
-        if(!card){
+        if (!card) {
             throw new NotFoundException('Card is not found')
         }
 

@@ -96,6 +96,14 @@ export class ExpensesService {
 
     }
 
+    async expenseById(id: string) {
+        const findById = await this.serviceRepo.expenseListById(id)
+
+        if (!findById) throw new NotFoundException('Card not found')
+
+        return findById
+    }
+
     async expensesUpdate(id: string, dto: UpdateExpensesDto) {
         const updateResult = await this.serviceRepo.expensesUpdateById(id, dto);
 
