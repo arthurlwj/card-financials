@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
-import { CreateCardDto, UpdateCardDto } from "src/dto/card.dto";
-import { FilterCardDTO } from "src/dto/filter-card.dto";
-import { ExpenseCreditCardRepository } from "src/repositories/card.repository";
+import { CreateCardDto, UpdateCardDto } from "src/cards/dtos/card.dto";
+import { FilterCardDTO } from "src/cards/dtos/filter-card.dto";
+import { ExpenseCreditCardRepository } from "src/cards/card.repository";
 import { cardPublic } from "src/utils/property-return";
 
 

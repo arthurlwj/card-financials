@@ -1,8 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { CreateCardDto, UpdateCardDto } from "src/dto/card.dto";
-import { FilterCardDTO } from "src/dto/filter-card.dto";
-import { Card } from "src/expenses/card.entity";
+import { CreateCardDto, UpdateCardDto } from "src/cards/dtos/card.dto";
+import { FilterCardDTO } from "src/cards/dtos/filter-card.dto";
+import { Card } from "src/entitties/card.entity";
 import { mapPostgresError } from "src/utils/postgres-error.utils";
 import { DeepPartial, Repository } from "typeorm";
 

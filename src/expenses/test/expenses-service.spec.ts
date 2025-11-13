@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ExpensesService } from './expenses.service';
-import { ExpenseRepository } from 'src/repositories/expense.repository';
+import { ExpensesService } from '../expenses.service';
+import { ExpenseRepository } from 'src/expenses/expense.repository';
 import { TypeOfSpending } from 'src/enums/type-of-spending.enum';
 
 describe('ExpensesService', () => {
