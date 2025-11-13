@@ -1,9 +1,9 @@
 import { Post, Controller, HttpCode, HttpStatus, Body, Get, Param, ParseUUIDPipe, Patch, Delete, UseFilters, Req, Query } from "@nestjs/common";
 import { ApiBadRequestResponse, ApiConflictResponse, ApiCreatedResponse, ApiNoContentResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiParam, ApiResponse, ApiTags } from "@nestjs/swagger";
-import { ExpensePublicDto } from "src/dto/expense-public.dto";
-import { CreateExpenseDto, UpdateExpensesDto } from "src/dto/expense.dto";
-import { FilterExpenseDto } from "src/dto/filter-expense.dto";
-import { ExpensesService } from "src/services/expenses.service";
+import { ExpensePublicDto } from "src/expenses/dtos/expense-public.dto";
+import { CreateExpenseDto, UpdateExpensesDto } from "src/expenses/dtos/expense.dto";
+import { FilterExpenseDto } from "src/expenses/dtos/filter-expense.dto";
+import { ExpensesService } from "src/expenses/expenses.service";
 
 
 @ApiTags('expenses')

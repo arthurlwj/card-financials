@@ -1,14 +1,14 @@
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { plainToInstance } from "class-transformer";
-import { ExpensePublicDto } from "src/dto/expense-public.dto";
-import { CreateExpenseDto, UpdateExpensesDto } from "src/dto/expense.dto";
-import { FilterExpenseDto } from "src/dto/filter-expense.dto";
-import { Expenses } from "src/expenses/expenses.entity";
-import { ExpenseCreditCardRepository } from "src/repositories/card.repository";
-import { ExpenseRepository } from "src/repositories/expense.repository";
+import { ExpensePublicDto } from "src/expenses/dtos/expense-public.dto";
+import { CreateExpenseDto, UpdateExpensesDto } from "src/expenses/dtos/expense.dto";
+import { FilterExpenseDto } from "src/expenses/dtos/filter-expense.dto";
+import { Expenses } from "src/entitties/expenses.entity";
+import { ExpenseCreditCardRepository } from "src/cards/card.repository";
+import { ExpenseRepository } from "src/expenses/expense.repository";
 import { toPublic } from "src/utils/property-return";
 import { DeepPartial } from "typeorm";
-import { ExpenseCreditCardService } from "./card.service";
+import { ExpenseCreditCardService } from "../cards/card.service";
 
 
 @Injectable()

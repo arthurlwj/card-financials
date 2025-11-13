@@ -1,8 +1,8 @@
 import { Body, Controller, Delete, Get, Param, ParseUUIDPipe, Patch, Post, Query } from "@nestjs/common";
 import { ApiNoContentResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiParam, ApiResponse, ApiTags } from "@nestjs/swagger";
-import { CreateCardDto, UpdateCardDto } from "src/dto/card.dto";
-import { FilterCardDTO } from "src/dto/filter-card.dto";
-import { ExpenseCreditCardService } from "src/services/card.service";
+import { CreateCardDto, UpdateCardDto } from "src/cards/dtos/card.dto";
+import { FilterCardDTO } from "src/cards/dtos/filter-card.dto";
+import { ExpenseCreditCardService } from "src/cards/card.service";
 
 
 @ApiTags('cards')
